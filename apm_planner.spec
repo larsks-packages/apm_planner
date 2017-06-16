@@ -4,8 +4,8 @@
 
 Name: apm_planner
 Version: 2.0.25
-Release: 1%{?dist}.git%{shortcommit0}
-Summary: Mavlink GCS
+Release: 2%{?dist}.git%{shortcommit0}
+Summary: ArduPilot and PX4 compatible ground station application
 License: GPLv3+
 URL: https://github.com/ArduPilot/apm_planner
 Source0: https://github.com/ArduPilot/%{name}/archive/%{commit0}.tar.gz#/%{name}-%{version}-%{shortcommit0}.tar.gz
@@ -48,12 +48,21 @@ make %{?_smp_mflags} CFLAGS="%{optflags}"
 %install
 make install INSTALL_ROOT=$RPM_BUILD_ROOT/usr
 
+mkdir -p $RPM_BUILD_ROOT%{_datadir}
+mv $RPM_BUILD_ROOT/usr/bin/sik_uploader \
+	$RPM_BUILD_ROOT%{_datadir}/sik_uploader
+
+mv $RPM_BUILD_ROOT%{_datadir}/sik_uploader/sik_uploader.py \
+	$RPM_BUILD_ROOT/usr/bin/sik_uploader
+
 %files
+%defattr(-, root, root)
 %doc README.md license.txt
 
 %{_bindir}/apmplanner2
-%{_bindir}/sik_uploader
+%attr(0755, root, root) %{_bindir}/sik_uploader
 %{_datadir}/APMPlanner2
+%{_datadir}/sik_uploader
 %{_datadir}/applications/apmplanner2.desktop
 %{_datadir}/menu/apmplanner2
 
