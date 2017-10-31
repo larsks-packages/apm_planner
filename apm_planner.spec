@@ -1,10 +1,10 @@
 %global debug_package %{nil}
-%global commit0 38c5f5e28b087c8161d64f556172dd12e2ee6cc9
+%global commit0 3f35d759afec76909da3def8c91f062e352c2489
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: apm_planner
 Version: 2.0.25
-Release: 2%{?dist}.git%{shortcommit0}
+Release: 3%{?dist}.git%{shortcommit0}
 Summary: ArduPilot and PX4 compatible ground station application
 License: GPLv3+
 URL: https://github.com/ArduPilot/apm_planner
@@ -16,7 +16,12 @@ BuildRequires: qt5-qtwebkit-devel
 BuildRequires: qt5-qtserialport-devel
 BuildRequires: qt5-qtsvg-devel
 BuildRequires: qt5-qtdeclarative-devel
+
+%if 0%{?fedora} < 26
 BuildRequires: qt5-qtquick1-devel
+%else
+BuildRequires: qt5-qtquickcontrols2-devel
+%endif
 BuildRequires: pyserial
 BuildRequires: python-pexpect
 BuildRequires: SDL-devel
@@ -49,23 +54,17 @@ make %{?_smp_mflags} CFLAGS="%{optflags}"
 make install INSTALL_ROOT=$RPM_BUILD_ROOT/usr
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}
-mv $RPM_BUILD_ROOT/usr/bin/sik_uploader \
-	$RPM_BUILD_ROOT%{_datadir}/sik_uploader
-
-mv $RPM_BUILD_ROOT%{_datadir}/sik_uploader/sik_uploader.py \
-	$RPM_BUILD_ROOT/usr/bin/sik_uploader
 
 %files
 %defattr(-, root, root)
 %doc README.md license.txt
 
 %{_bindir}/apmplanner2
-%attr(0755, root, root) %{_bindir}/sik_uploader
+%attr(0755, root, root) %{_bindir}/sik_uploader.py
 %{_datadir}/APMPlanner2
 %{_datadir}/sik_uploader
 %{_datadir}/applications/apmplanner2.desktop
-%{_datadir}/menu/apmplanner2
 
 %changelog
-* Thu Feb 04 2016 Lars Kellogg-Stedman <lars@redhat.com> - 0.21
-- updated to 0.21-1fcbf09
+* Mon Oct 30 2017 Lars Kellogg-Stedman <lars@redhat.com> - 3f35d75
+- updated to 3f35d75
